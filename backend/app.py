@@ -2,15 +2,18 @@ from flask import Flask, request, jsonify, send_from_directory, session
 import sqlite3, hashlib, os, json
 from datetime import datetime, date
 from functools import wraps
-
 from database import get_db, init_db, close_db, seed_defaults
 
-app = Flask(__name__, static_folder='.')
-app.secret_key = 'secret_key'
+basedir = os.path.abspath(os.path.dirname(__file__))
+DB_PATH = os.path.join(basedir, 'money_tracker.db')
+
+app = Flask(__name__, static_folder='static')
+app.secret_key = os.environ.get('SECRET_KEY', 'secret_key')
+
+with app.app_context():
+    init_db()
 
 app.teardown_appcontext(close_db)
-
-DB_PATH = 'money_tracker.db' 
 
 def hash_password(pw):
     return hashlib.sha256(pw.encode()).hexdigest()
@@ -539,20 +542,18 @@ def reset_data():
     seed_defaults(uid)
     return jsonify({'success': True})
 
-
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_frontend(path):
     if path.startswith('api/'):
-        return jsonify({'error': 'Not found'}), 404
-    static_dir = os.path.join(os.path.dirname(__file__), 'static')
-    if path and os.path.exists(os.path.join(static_dir, path)):
-        return send_from_directory(static_dir, path)
-    return send_from_directory(static_dir, 'index.html')
+        return jsonify({'error': 'API route not found'}), 404
 
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    
+    return send_from_directory(app.static_folder, 'index.html')
 
 if __name__ == '__main__':
-    init_db()
     print("Money Tracker running at http://localhost:5000")
-    print("   Database:", os.path.abspath(DB_PATH))
+    print("Database Path:", DB_PATH)
     app.run(debug=True, port=5000)

@@ -3,6 +3,7 @@ import os
 from threading import local
 
 _db_local = local()
+basedir = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.environ.get('DATABASE_PATH', '/tmp/money_tracker.db')
 
 def get_db():
