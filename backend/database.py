@@ -8,9 +8,9 @@ DB_PATH = os.environ.get('DATABASE_PATH', '/tmp/money_tracker.db')
 def get_db():
     """Get thread-local database connection"""
     if not hasattr(_db_local, 'db'):
-        _db_local.db = sqlite3.connect(DB_PATH, timeout=20)  # timeout is key!
+        _db_local.db = sqlite3.connect(DB_PATH, timeout=20) 
         _db_local.db.row_factory = sqlite3.Row
-        # Enable WAL mode for better concurrency
+    
         _db_local.db.execute('PRAGMA journal_mode=WAL')
     return _db_local.db
 
@@ -24,8 +24,7 @@ def init_db():
     """Create all tables - same as your original"""
     conn = sqlite3.connect(DB_PATH, timeout=20)
     conn.row_factory = sqlite3.Row
-    
-    # Your EXACT table creation code
+
     conn.executescript('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

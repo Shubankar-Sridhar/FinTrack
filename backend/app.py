@@ -3,16 +3,14 @@ import sqlite3, hashlib, os, json
 from datetime import datetime, date
 from functools import wraps
 
-# CHANGE 1: Import from database.py instead
 from database import get_db, init_db, close_db, seed_defaults
 
 app = Flask(__name__, static_folder='.')
 app.secret_key = 'secret_key'
 
-# CHANGE 2: Register cleanup function
 app.teardown_appcontext(close_db)
 
-DB_PATH = 'money_tracker.db'  # Keep this for reference but not used directly
+DB_PATH = 'money_tracker.db' 
 
 def hash_password(pw):
     return hashlib.sha256(pw.encode()).hexdigest()
@@ -27,16 +25,6 @@ def require_auth(f):
             return jsonify({'error': 'Not authenticated'}), 401
         return f(*args, **kwargs)
     return decorated
-
-# CHANGE 3: Remove your old get_db() and init_db() from here
-# They are now in database.py
-
-# CHANGE 4: Remove your old seed_defaults() from here
-# It's now in database.py
-
-# ============================================
-# YOUR EXACT ROUTES - NO CHANGES NEEDED
-# ============================================
 
 @app.route('/api/auth/register', methods=['POST'])
 def register():
