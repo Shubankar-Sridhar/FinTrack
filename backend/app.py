@@ -547,6 +547,18 @@ def reset_data():
     seed_defaults(uid)
     return jsonify({'success': True})
 
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    if path.startswith('api/'):
+        return jsonify({'error': 'Not found'}), 404
+    static_dir = os.path.join(os.path.dirname(__file__), 'static')
+    if path and os.path.exists(os.path.join(static_dir, path)):
+        return send_from_directory(static_dir, path)
+    return send_from_directory(static_dir, 'index.html')
+
+
 if __name__ == '__main__':
     init_db()
     print("Money Tracker running at http://localhost:5000")
