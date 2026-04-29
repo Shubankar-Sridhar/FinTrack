@@ -29,9 +29,6 @@ def require_auth(f):
         return f(*args, **kwargs)
     return decorated
 
-@app.route('/api/test', methods=['GET'])
-def test_api():
-    return jsonify({'status': 'API is working!'})
 
 @app.route('/api/auth/register', methods=['POST'])
 def register():
