@@ -3,7 +3,7 @@ import os
 from threading import local
 
 _db_local = local()
-DB_PATH = os.environ.get('DATABASE_PATH', 'money_tracker.db')
+DB_PATH = os.environ.get('DATABASE_PATH', '/tmp/money_tracker.db')
 
 def get_db():
     """Get thread-local database connection"""
