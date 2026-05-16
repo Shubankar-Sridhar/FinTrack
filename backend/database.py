@@ -7,7 +7,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.environ.get('DATABASE_PATH', '/tmp/money_tracker.db')
 
 def get_db():
-    """Get thread-local database connection"""
     if not hasattr(_db_local, 'db'):
         _db_local.db = sqlite3.connect(DB_PATH, timeout=20) 
         _db_local.db.row_factory = sqlite3.Row
@@ -16,13 +15,11 @@ def get_db():
     return _db_local.db
 
 def close_db(error=None):
-    """Close connection when request ends"""
     if hasattr(_db_local, 'db'):
         _db_local.db.close()
         delattr(_db_local, 'db')
 
 def init_db():
-    """Create all tables - same as your original"""
     conn = sqlite3.connect(DB_PATH, timeout=20)
     conn.row_factory = sqlite3.Row
 
@@ -120,7 +117,6 @@ def init_db():
     conn.close()
 
 def seed_defaults(user_id, salary=0):
-    """Your exact seed function - unchanged"""
     conn = get_db()
     c = conn.cursor()
     categories = [
